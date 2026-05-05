@@ -94,6 +94,28 @@ class PlantController extends Controller
   }
 
   /**
+   * Get all records without pagination.
+   */
+  public function all()
+  {
+    try {
+      // Get all plant records
+      $plants = PlantModel::all();
+
+      return response()->json([
+        'message' => 'All plant records retrieved successfully',
+        'data' => $plants,
+        'total' => $plants->count(),
+      ], 200);
+    } catch (\Exception $e) {
+      return response()->json([
+        'message' => 'Failed to retrieve all plant records',
+        'error' => $e->getMessage(),
+      ], 500);
+    }
+  }
+
+  /**
    * Update the specified resource in storage.
    */
   public function update(Request $request, PlantModel $plantController)

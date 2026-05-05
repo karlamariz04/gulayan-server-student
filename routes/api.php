@@ -25,6 +25,7 @@ Route::get("/home", [UserController::class,"index"]);
 Route::get("/new-record", [UserController::class,"store"]);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('plants/all', [PlantController::class, 'all']);
     Route::apiResource('plants', PlantController::class);
     Route::apiResource('users', UserController::class);
 });
