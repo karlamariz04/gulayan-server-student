@@ -12,11 +12,19 @@ class PlantController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request)
   {
     try {
-      // Get all plants with pagination (15 records per page)
-      $plants = PlantModel::paginate(15);
+      // Get the per_page parameter with validation (default 15, max 100)
+      $perPage = $request->query('per_page', 15);
+      
+      // Validate per_page to prevent abuse
+      if (!is_numeric($perPage) || $perPage < 1 || $perPage > 100) {
+        $perPage = 15;
+      }
+      
+      // Get all plants with pagination
+      $plants = PlantModel::paginate((int)$perPage);
 
       return response()->json([
         'message' => 'Plants retrieved successfully',
@@ -28,6 +36,7 @@ class PlantController extends Controller
           'last_page' => $plants->lastPage(),
           'from' => $plants->firstItem(),
           'to' => $plants->lastItem(),
+          'has_more' => $plants->hasMorePages(),
         ],
       ], 200);
     } catch (\Exception $e) {
